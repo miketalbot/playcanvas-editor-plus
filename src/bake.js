@@ -14,6 +14,7 @@ const Bake = {
     }
 }
 
+
 const Options = {
     state: {numberOfVertices: 0,   castShadows: true, receiveShadows: true, lightmapped: false, lightmapSizeMultiplier: 16},
     view: function () {
@@ -127,3 +128,54 @@ function bake() {
 }
 
 add(Bake)
+
+
+const Clean = {
+    view: function () {
+        return m('span.ui-button', {onclick: clean}, "Dedupe Materials")
+    }
+}
+
+add(Clean)
+
+function clean() {
+    const materials = []
+    const models = []
+    editor.call('assets:find', asset => {
+        if(!asset || !asset._data) return
+        switch (asset._data.type) {
+            case 'material':
+                materials.push(asset)
+                break
+            case 'model':
+                models.push(asset)
+                break
+        }
+    })
+    let map = new Map()
+    let change = new Map()
+    let unused = new Map()
+    for(let material of materials) {
+        unused.set(material._data.uniqueId, material)
+        const key = JSON.stringify(material.get('data'))
+        if(!map.has(key)) {
+            map.set(key, material)
+            change.set(material._data.uniqueId, material._data.uniqueId)
+        } else {
+            change.set(material._data.uniqueId, map.get(key)._data.uniqueId)
+        }
+    }
+    for(let model of models) {
+        const data = model.get('data')
+        let i = 0
+        for(let mapping of data.mapping) {
+            let material = change.get(mapping.material) || mapping.material
+            unused.delete(material)
+            model.set(`data.mapping.${i++}.material`, material)
+        }
+
+    }
+     for(let item of Array.from(unused)) {
+         editor.call('assets:delete', item[1])
+     }
+}

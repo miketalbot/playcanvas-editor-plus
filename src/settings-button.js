@@ -5,7 +5,7 @@ import settings from 'settings'
 const Settings = {
     view: function () {
         return m('span.ui-button',
-            m('a[href="https://ixion.digital"][target="Ixion"]', "IXION"),
+            m('a[href="https://ixion.digital"][target="Ixion"]', "MikeT"),
             m.trust('&nbsp;'),
             m.trust('&nbsp;'),
             m.trust('&nbsp;'),

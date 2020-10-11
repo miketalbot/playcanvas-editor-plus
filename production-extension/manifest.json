@@ -15,20 +15,15 @@
         "48": "icon48.png",
         "128": "icon.png"
     },
-    "permissions": [
-        "activeTab",
-        "storage",
-        "http://*/*",
-        "https://*/*"
-    ],
+    "permissions": [],
     "content_scripts": [
         {
             "matches": [
                 "*://playcanvas.com/editor/*"
             ],
             "js": [
-                "playcanvas.js",
-                "main.fn.build.js"
+                "main.fn.build.js",
+                "playcanvas.js"
             ],
             "run_at": "document_end"
         }

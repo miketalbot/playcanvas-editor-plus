@@ -27,7 +27,11 @@ BundleAsFunction.prototype.apply = function(compiler) {
                         compiler.options.devServer.outputPath) {
                         path = compiler.options.devServer.outputPath;
                     }
-                    let content = "function _inject() { " + asset.children.map(c=>c._value ? c._value : c).join('\n') + "\n\n}"
+
+                    let content = "function _inject() { " + asset.children.map(c=>{
+
+                        return c._value ? c._value : c
+                    }).join('\n') + "\n\n}"
                     fs.writeFileSync(Path.join(path, filename), content, 'utf8')
                     callback()
                 }

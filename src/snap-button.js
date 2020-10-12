@@ -4,7 +4,7 @@ import settings from 'settings'
 
 
 function snap() {
-    let increment = editor.call('settings:projectUser').get('editor').snapIncrement
+    let increment = +(size || '0') || editor.call('settings:projectUser').get('editor').snapIncrement
     let items = editor.call('selector:items')
     items.forEach(item => {
         let position = item.get('position')
@@ -24,6 +24,12 @@ function snapRotation() {
         item.set('rotation', rotation)
     })
 }
+let size = 25
+
+editor.call('hotkey:register', 'snap', {
+    key: '8',
+    callback:snap
+})
 
 const Snap = {
     view: function () {
@@ -32,7 +38,21 @@ const Snap = {
                     onclick: snap
                 },
                 m('i.fa.fa-square'),
-                "Snap"
+                m('span', {style: {marginRight: '7px'}}, "Snap"),
+                m('input.field.right-space', {
+                    placeholder: "Size",
+                    value: "" + size,
+                    style: {
+                        marginLeft: 16,
+                        width: '50px'
+                    },
+                    oninput: m.withAttr('value', value => size = value),
+                    onfocus: function () {
+                        setTimeout(() => {
+                            this.setSelectionRange(0, size.length)
+                        })
+                    }
+                }),
             ), m('span.ui-button', {
                     onclick: snapRotation
                 },

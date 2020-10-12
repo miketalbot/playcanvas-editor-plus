@@ -34,6 +34,7 @@ function awaitAsset(id) {
         let asset = pc.app.assets.get(id)
         if (asset) {
             asset.ready(resolve)
+            pc.app.assets.load(asset)
         } else {
             resolve()
         }
@@ -90,9 +91,17 @@ async function prepMaterial(id) {
     if (!asset) return standardMaterial
     var data = asset.get('data')
     if (!data) return standardMaterial
+    materialLookup[id] = standardMaterial
     let material = handler.open('', data)
-    material.update()
     materialLookup[id] = material
+    if(data.diffuseMap) {
+        const dm = await awaitAsset(data.diffuseMap)
+        material.diffuseMap = dm.resource
+    }
+    if (data.emissiveMap) {
+        material.emissiveMap = (await awaitAsset(data.emissiveMap)).resource
+    }
+    material.update()
     return material
 }
 

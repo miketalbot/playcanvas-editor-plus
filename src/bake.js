@@ -3,6 +3,7 @@ import m from 'mithril'
 import './bake.scss'
 import combine from 'mesh-combiner/editor'
 import settings from 'settings'
+import sortBy from 'lodash/sortBy'
 
 const Bake = {
     view: function () {
@@ -157,7 +158,7 @@ function clean() {
     let unused = new Map()
     for(let material of materials) {
         unused.set(material._data.uniqueId, material)
-        const key = JSON.stringify(material.get('data'))
+        const key = JSON.stringify(sortBy(Object.entries(material.get('data')), v=>v[0]))
         if(!map.has(key)) {
             map.set(key, material)
             change.set(material._data.uniqueId, material._data.uniqueId)
